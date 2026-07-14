@@ -1,64 +1,74 @@
+# ❤️ Credits
+
+> ## Original Project by **R3novadcl**
+
+This project is based on the original Discord Music Bot created by **R3novadcl**.
+
+I did **not** create this bot from scratch. I have customized and improved the project by adding new features, improving the web dashboard, fixing bugs, redesigning parts of the interface, and making various enhancements.
+
+**All credit for the original source code belongs to R3novadcl.**
+
+Thank you for creating this amazing project! ❤️
+
+---
+
 # 🎵 Echo Music Bot + Web Dashboard
 
-A powerful Discord Music Bot with a beautiful and modern Web Dashboard built for easy server management, playlist management, and high-quality music playback.
+A powerful and modern **Discord Music Bot** with a beautiful **Web Dashboard**. Easily manage your bot, playlists, and server with an easy-to-use interface.
 
 ---
 
 # ✨ Features
 
-## 🎵 Music Features
+## 🎵 Music Bot Features
 
-- High Quality Music Playback
+- High Quality Audio Playback
 - Slash Commands
-- Autoplay
-- Queue System
-- Skip, Pause, Resume
-- Loop & Shuffle
-- Volume Control
-- Lyrics Support
-- 24/7 Mode
 - Spotify Support
 - SoundCloud Support
+- YouTube Playback
+- Queue System
+- Autoplay
+- Loop Songs
+- Shuffle Queue
+- Pause / Resume
+- Skip Songs
+- Volume Control
+- 24/7 Music Mode
 - Playlist Support
-- Fast & Stable Playback
+- Fast & Stable Performance
 
 ---
 
 # 🌐 Dashboard Features
 
-- 🏠 Modern Home Page
+- 🏠 Beautiful Home Page
 - 📊 Dashboard Statistics
-- 🎵 Create Unlimited Playlists
-- ✏️ Edit & Delete Playlists
-- 🏆 Playlist Leaderboard
-- 📈 Top Trending Playlists
-- 🔍 Search Public Playlists
 - 👤 Discord OAuth2 Login
-- ⚡ Fast & Responsive Dashboard
-- 🌙 Beautiful UI Design
+- 🎵 Create Unlimited Playlists
+- ✏️ Edit Playlists
+- ❌ Delete Playlists
+- 🏆 Playlist Leaderboard
+- 📈 Top Ranked Playlists
+- 🔍 Search Public Playlists
 - 📱 Mobile Friendly
-- 🎧 Easy Music Management
+- ⚡ Fast & Responsive Dashboard
+- 🌙 Modern UI Design
 
 ---
 
-# 📸 Dashboard Preview
+# 📂 Installation
 
-> Add your dashboard screenshots here.
-
----
-
-# ⚙️ Setup Guide
-
-## 1️⃣ Clone Repository
+## Clone Repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY
-cd YOUR_REPOSITORY
+git clone https://github.com/SebuPlayz/Echo-Music-Bot-Dashboard.git
+cd Echo-Music-Bot-Dashboard
 ```
 
 ---
 
-## 2️⃣ Install Packages
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -66,39 +76,21 @@ pip install -r requirements.txt
 
 ---
 
-## 3️⃣ Configure Bot
+# ⚙️ Configuration
 
-Open the `.env` file and replace:
+## Step 1 — Edit `.env`
+
+Open the `.env` file.
+
+Replace
 
 ```env
 BOT_TOKEN=YOUR_BOT_TOKEN
 ```
 
-with your actual Discord Bot Token.
+with your Discord Bot Token.
 
----
-
-## 4️⃣ Change Owner ID
-
-Open:
-
-```
-config.py
-```
-
-Replace the Owner ID with your Discord User ID.
-
-Example:
-
-```python
-OWNER_ID = YOUR_DISCORD_ID
-```
-
----
-
-## 5️⃣ Configure Dashboard
-
-Fill these values inside your `.env` file.
+Then configure the remaining values.
 
 ```env
 DISCORD_CLIENT_ID=
@@ -111,34 +103,52 @@ DASHBOARD_ENABLED=true
 
 ---
 
-# 🔑 Discord OAuth2 Setup
+## Step 2 — Edit `config.py`
 
-Open:
+Open
+
+```python
+config.py
+```
+
+Replace
+
+```python
+OWNER_ID = YOUR_DISCORD_ID
+```
+
+with your own Discord User ID.
+
+---
+
+# 🌐 Dashboard Login Setup
+
+To enable Dashboard Login, open the Discord Developer Portal.
 
 https://discord.com/developers/applications
 
 Select your application.
 
-Go to:
+Go to
 
 ```
 OAuth2
 ```
 
-Copy your
+Copy
 
 - Client ID
 - Client Secret
 
-Paste them into your `.env` file.
+Paste them inside your `.env` file.
 
 ---
 
-# 🚨 Redirect URI (IMPORTANT)
+# 🔗 Redirect URI
 
-For Dashboard Login, you MUST add the same Redirect URI inside the Discord Developer Portal.
+Don't forget to add your Redirect URI inside the Discord Developer Portal.
 
-Example:
+Example
 
 ```
 http://localhost:2076/auth/callback
@@ -150,15 +160,15 @@ or
 https://yourdomain.com/auth/callback
 ```
 
-⚠️ The Redirect URI inside your `.env` file and Discord Developer Portal MUST be exactly the same.
+⚠️ The Redirect URI inside your `.env` file **must exactly match** the Redirect URI added in the Discord Developer Portal.
 
-Otherwise Dashboard Login will NOT work.
+Otherwise Dashboard Login will not work.
 
 ---
 
-# 📂 Required Files
+# 📁 Files You Must Edit
 
-Before starting the bot, edit these files.
+Before running the bot, edit these files.
 
 ```
 .env
@@ -167,7 +177,7 @@ config.py
 
 ---
 
-# 🚀 Start Bot
+# 🚀 Start The Bot
 
 ```bash
 python main.py
@@ -179,32 +189,49 @@ or
 python bot.py
 ```
 
-(depending on your main file)
+depending on your project.
 
 ---
 
-# ⚠️ Important
+# 📸 Screenshots
 
-❌ Never share your Bot Token.
+You can add screenshots of your Dashboard here.
 
-❌ Never share your Client Secret.
-
-❌ Never upload your configured `.env` file to GitHub.
-
-Keep all credentials private.
-
----
-
-# ❤️ Support
-
-If you like this project,
-
-⭐ Star this Repository
-
-🍴 Fork this Repository
-
-💖 Share it with your friends.
+```
+images/home.png
+images/dashboard.png
+images/leaderboard.png
+images/playlists.png
+```
 
 ---
 
-# 👨‍💻 Made with ❤️ by Echo Music
+# ⭐ Support
+
+If you like this project, please consider supporting it by:
+
+⭐ Starring this repository
+
+🍴 Forking this repository
+
+💖 Sharing it with your friends
+
+---
+
+# 📜 License
+
+Please respect the work of the original developer.
+
+If you modify or redistribute this project, kindly keep the original credits to **R3novadcl**.
+
+---
+
+# 👨‍💻 Maintained & Customized By
+
+## 🎵 Echo Music
+
+GitHub Repository
+
+https://github.com/SebuPlayz/Echo-Music-Bot-Dashboard
+
+Made with ❤️ by **Echo Music**
