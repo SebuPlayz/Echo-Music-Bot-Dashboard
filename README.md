@@ -34,14 +34,6 @@ Thank you for creating this amazing project ❤️
 
 ---
 
-# 🌟 Repository
-
-### GitHub Repository
-
-https://github.com/SebuPlayz/Echo-Music-Bot-Dashboard
-
----
-
 # ✨ Features
 
 ## 🎵 Music Features
