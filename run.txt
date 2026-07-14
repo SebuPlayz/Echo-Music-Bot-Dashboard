@@ -1,0 +1,79 @@
+=========================================
+        Echo Music Bot + Dashboard
+=========================================
+
+Before running the bot, complete the following setup.
+
+1. Rename .env.example to .env
+
+2. Open the .env file and configure:
+
+- BOT_TOKEN
+- DISCORD_CLIENT_ID
+- DISCORD_CLIENT_SECRET
+- DASHBOARD_REDIRECT_URI
+- DASHBOARD_SESSION_SECRET
+
+3. Open config.py
+
+Replace:
+
+OWNER_ID = YOUR_DISCORD_ID
+
+with your own Discord User ID.
+
+4. Install all required packages
+
+pip install -r requirements.txt
+
+5. Start the bot
+
+python main.py
+
+OR
+
+python bot.py
+
+(depending on your project)
+
+=========================================
+Dashboard Login
+=========================================
+
+Go to:
+
+https://discord.com/developers/applications
+
+Open your application.
+
+Go to OAuth2.
+
+Copy:
+
+- Client ID
+- Client Secret
+
+Paste them into the .env file.
+
+Add your Redirect URI.
+
+Example:
+
+http://localhost:2076/auth/callback
+
+The Redirect URI inside the Discord Developer Portal and the .env file MUST be exactly the same.
+
+=========================================
+Credits
+=========================================
+
+Original Project:
+R3novadcl
+
+Customized & Maintained By:
+Echo Music
+
+GitHub:
+https://github.com/SebuPlayz/Echo-Music-Bot-Dashboard
+
+=========================================
