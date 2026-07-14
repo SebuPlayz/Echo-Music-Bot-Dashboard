@@ -1,8 +1,11 @@
 # 🎵 Echo Music Bot + Web Dashboard
 
-A modern, feature-rich Discord Music Bot with a powerful Web Dashboard. Manage your server, control music, create playlists, and customize everything from an elegant and easy-to-use interface.
+> A powerful Discord Music Bot with a modern Web Dashboard for complete music management, playlist sharing, and server control.
 
-> **Repository:** https://github.com/SebuPlayz/Echo-Music-Bot-Dashboard
+![GitHub](https://img.shields.io/github/license/SebuPlayz/Echo-Music-Bot-Dashboard)
+![Stars](https://img.shields.io/github/stars/SebuPlayz/Echo-Music-Bot-Dashboard?style=social)
+![Forks](https://img.shields.io/github/forks/SebuPlayz/Echo-Music-Bot-Dashboard?style=social)
+![Python](https://img.shields.io/badge/Python-3.11+-blue)
 
 ---
 
@@ -10,13 +13,32 @@ A modern, feature-rich Discord Music Bot with a powerful Web Dashboard. Manage y
 
 ## Original Project by **R3novadcl**
 
-This project is based on the original work created by **R3novadcl**.
+This project is based on the original Discord Music Bot created by **R3novadcl**.
 
-I did **not** create the original bot from scratch. I have customized, improved, and extended the project by redesigning the dashboard, adding new features, fixing bugs, improving the user experience, and making various enhancements.
+I did **not** create this bot from scratch.
 
-**All credit for the original source code belongs to R3novadcl.**
+I have customized and improved the project by:
 
-Thank you for creating such an amazing project. ❤️
+- ✨ Redesigning the Dashboard
+- 🎵 Adding Playlist Management
+- 🔗 Playlist Share System
+- 📊 Dashboard Statistics
+- 🐞 Bug Fixes
+- ⚡ Performance Improvements
+- 🎨 UI Improvements
+- 🛠️ Various Enhancements
+
+**Full credit for the original source code belongs to R3novadcl.**
+
+Thank you for creating this amazing project ❤️
+
+---
+
+# 🌟 Repository
+
+### GitHub Repository
+
+https://github.com/SebuPlayz/Echo-Music-Bot-Dashboard
 
 ---
 
@@ -24,66 +46,63 @@ Thank you for creating such an amazing project. ❤️
 
 ## 🎵 Music Features
 
-- High Quality Music Playback
+- High Quality Audio Playback
 - Slash Commands
 - Spotify Support
 - SoundCloud Support
-- YouTube Support
 - Queue System
-- Skip, Pause & Resume
-- Loop & Shuffle
+- Autoplay
+- Loop
+- Shuffle
+- Pause / Resume
+- Skip
 - Volume Control
-- 24/7 Music Mode
 - Playlist Support
-- Fast & Stable Performance
+- 24/7 Music Mode
+- Fast & Stable Playback
 
 ---
 
-# 🌐 Dashboard Features
+## 🌐 Dashboard Features
 
-The integrated Dashboard makes managing your music easier than ever.
+The Echo Dashboard allows users to control almost everything directly from the browser without using Discord commands.
 
 ### 🏠 Modern Dashboard
 
 - Beautiful Home Page
-- Clean & Responsive UI
-- Mobile Friendly Design
 - Dashboard Statistics
 - Discord OAuth2 Login
-- Easy Server Management
+- Mobile Friendly
+- Responsive Design
+- Fast User Interface
 
 ---
 
-### 🎵 Advanced Playlist Manager
+### 🎵 Playlist Manager
 
-Manage everything directly from your browser without using Discord commands.
+Manage playlists directly from the Dashboard.
 
-✅ Create Unlimited Playlists
+Features include:
 
-✅ Edit Existing Playlists
-
-✅ Delete Playlists
-
-✅ Rename Playlists
-
-✅ Add Songs to Playlists
-
-✅ Remove Songs from Playlists
-
-✅ View Complete Playlist Details
-
-✅ Search Public Playlists
+- ✅ Create Unlimited Playlists
+- ✏️ Edit Playlists
+- ❌ Delete Playlists
+- 📝 Rename Playlists
+- ➕ Add Songs
+- ➖ Remove Songs
+- 🔍 Search Songs
+- 📂 View Playlist Details
 
 ---
 
 ### 🔒 Playlist Privacy
 
-Every playlist can be configured as:
+Each playlist can be configured as:
 
 - 🌍 Public Playlist
 - 🔒 Private Playlist
 
-Private playlists are only visible to the owner.
+Private playlists are only visible to their owner.
 
 Public playlists can be discovered by everyone.
 
@@ -93,27 +112,25 @@ Public playlists can be discovered by everyone.
 
 One of the best features of Echo Music Dashboard.
 
-Every playlist automatically receives a unique **Share Code**.
+Every playlist automatically generates a unique **Playlist Share Code**.
 
-Simply share your Playlist Code with friends.
+Simply share the code with friends.
 
-Anyone can import your playlist instantly without manually adding every song.
-
-Sharing playlists has never been easier.
+They can instantly import the playlist into their own account without manually adding every song.
 
 ---
 
 ### 🏆 Playlist Leaderboard
 
-The Dashboard includes a built-in Playlist Leaderboard where users can discover the most popular playlists.
+Discover the most popular playlists created by the community.
 
-Features include:
+Features:
 
-- Top Ranked Playlists
-- Most Popular Playlists
-- Trending Playlists
-- Community Favorites
-- Public Playlist Discovery
+- 🏆 Top Ranked Playlists
+- 📈 Trending Playlists
+- 🌍 Public Playlist Discovery
+- ❤️ Community Favorites
+- 👥 Most Used Playlists
 
 ---
 
@@ -123,11 +140,86 @@ View useful information directly from the Dashboard.
 
 - Total Servers
 - Total Users
+- Songs Played
 - Total Playlists
 - Public Playlists
 - Private Playlists
-- Top Playlists
+- Top Ranked Playlists
 - Dashboard Activity
+
+---
+
+# 📸 Dashboard Preview
+
+## 🏠 Landing Page
+
+The welcome page introducing Echo Music Bot with a clean and modern interface.
+
+![Landing Page](images/home.png)
+
+---
+
+## 🌐 Dashboard Home
+
+Manage all your Discord servers from one place.
+
+Invite Echo Music Bot, access your servers and control everything with one click.
+
+![Dashboard Home](images/dashboardhome.png)
+
+---
+
+## 🔍 Song Search
+
+Search millions of songs directly from the Dashboard.
+
+Add songs instantly without using Discord commands.
+
+![Song Search](images/song-search.png)
+
+---
+
+## 🎵 Song Queue
+
+Control the current music queue directly from the Dashboard.
+
+Features:
+
+- ▶ Play
+- ⏸ Pause
+- ⏭ Skip
+- 🔀 Shuffle
+- 🔁 Loop
+- ❌ Remove Songs
+
+![Song Queue](images/song-and-queue.png)
+
+---
+
+## 🏆 Playlist Leaderboard
+
+Browse the best playlists created by the community.
+
+Discover trending playlists and popular creators.
+
+![Playlist Leaderboard](images/playlist-leaderboard.png)
+
+---
+
+## ⚙️ Settings
+
+Customize your Echo Music Bot experience.
+
+Available settings include:
+
+- Default Volume
+- Music Settings
+- Dashboard Preferences
+- Theme Settings
+- Language
+- Bot Configuration
+
+![Settings](images/settings.png)
 
 ---
 
@@ -152,7 +244,7 @@ pip install -r requirements.txt
 
 # 🔧 Configuration
 
-## 1. Edit `.env`
+## Edit `.env`
 
 Replace
 
@@ -160,7 +252,7 @@ Replace
 BOT_TOKEN=YOUR_BOT_TOKEN
 ```
 
-Then configure
+Then configure:
 
 ```env
 DISCORD_CLIENT_ID=
@@ -173,7 +265,7 @@ DASHBOARD_ENABLED=true
 
 ---
 
-## 2. Edit `config.py`
+## Edit `config.py`
 
 Replace
 
@@ -185,9 +277,9 @@ with your Discord User ID.
 
 ---
 
-# 🌐 Dashboard Login Setup
+# 🌐 Discord OAuth2 Setup
 
-Open
+Go to
 
 https://discord.com/developers/applications
 
@@ -199,20 +291,20 @@ Navigate to
 OAuth2
 ```
 
-Copy your
+Copy:
 
 - Client ID
 - Client Secret
 
-Paste them inside your `.env`.
+Paste them into your `.env`.
 
 ---
 
 # 🔗 Redirect URI
 
-Add the same Redirect URI inside your Discord Developer Portal.
+Add the same Redirect URI inside the Discord Developer Portal.
 
-Example
+Example:
 
 ```
 http://localhost:2076/auth/callback
@@ -224,15 +316,15 @@ or
 https://yourdomain.com/auth/callback
 ```
 
-⚠️ **The Redirect URI inside the Developer Portal and the `.env` file must be exactly the same.**
+The Redirect URI inside the Developer Portal and your `.env` file **must match exactly**.
 
 Otherwise Dashboard Login will not work.
 
 ---
 
-# 📁 Files To Edit
+# 📁 Files You Must Edit
 
-Before running the bot, edit:
+Before running the bot edit:
 
 ```
 .env
@@ -241,7 +333,7 @@ config.py
 
 ---
 
-# 🚀 Run
+# 🚀 Run Bot
 
 ```bash
 python main.py
@@ -257,34 +349,21 @@ depending on your project.
 
 ---
 
-# 📸 Screenshots
-
-You can add screenshots here.
-
-- Home Page
-- Dashboard
-- Playlist Manager
-- Playlist Leaderboard
-- Statistics Page
-- Login Page
-
----
-
 # ⭐ Support
 
-If you enjoy this project, please consider:
+If you like this project please consider
 
-⭐ Starring this repository
+⭐ Star this Repository
 
-🍴 Forking this repository
+🍴 Fork this Repository
 
-💖 Sharing it with your friends
+❤️ Share with your Friends
 
 ---
 
 # 📜 License
 
-Please respect the work of the original developer.
+Please respect the original developer.
 
 If you modify or redistribute this project, kindly keep the original credits to **R3novadcl**.
 
@@ -292,7 +371,7 @@ If you modify or redistribute this project, kindly keep the original credits to 
 
 # 👨‍💻 Customized & Maintained by Echo Music
 
-GitHub Repository
+GitHub
 
 https://github.com/SebuPlayz/Echo-Music-Bot-Dashboard
 
