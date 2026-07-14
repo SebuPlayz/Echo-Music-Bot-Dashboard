@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ bot_name }} — Premium Discord Music Bot</title>
+  <meta name="description" content="{{ bot_name }} is a premium Discord music bot with a stunning live web dashboard. Control your server's music, queue, and settings in real-time.">
+  <link rel="stylesheet" href="/static/style.css?v=7.4">
+  <link rel="icon" href="/static/Echo-avatar.png">
+  <style>
+    /* ======================================================
+       PREMIUM MONOCHROMATIC DESIGN SYSTEM
+    ====================================================== */
+    :root {
+      --c-bg: #050506;
+      --c-surface: rgba(255,255,255,0.025);
+      --c-border: rgba(255,255,255,0.07);
+      --c-border-hover: rgba(255,255,255,0.18);
+      --c-text-hi: #f4f4f5;
+      --c-text-mid: #a1a1aa;
+      --c-text-lo: #52525b;
+      --radius-card: 18px;
+      --radius-sm: 10px;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--c-bg);
+      color: var(--c-text-hi);
+      overflow-x: hidden;
+      font-family: var(--font-body, 'Inter', sans-serif);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ── Animated Background ────── */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(150px);
+      opacity: 0.4;
+    }
+
+    .bg-orb-1 {
+      width: 800px; height: 800px;
+      top: -200px; left: -100px;
+      background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+      animation: orbFloat 22s ease-in-out infinite alternate;
+    }
+
+    .bg-orb-2 {
+      width: 700px; height: 700px;
+      top: 50%; right: -200px;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      animation: orbFloat 30s ease-in-out infinite alternate-reverse;
+    }
+
+    .bg-orb-3 {
+      width: 600px; height: 600px;
+      bottom: -100px; left: 30%;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+      animation: orbFloat 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes orbFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, -50px) scale(1.1); }
+    }
+
+    /* Floating particles */
+    .particle-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      color: rgba(255,255,255,0.2);
+      font-size: 10px;
+      animation: particleDrift linear infinite;
+      user-select: none;
+    }
+    @keyframes particleDrift {
+      from { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      to { transform: translateY(-10vh) rotate(540deg); opacity: 0; }
+    }
+
+    /* Noise texture overlay */
+    .bg-noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* Grid lines */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── Navbar ─────────────────────────────────────────── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      padding: 0 48px;
+      background: rgba(5,5,6,0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: var(--c-text-hi);
+    }
+
+    .nav-logo img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--c-border);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-links a {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--c-text-mid);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--c-text-hi); }
+
+    .nav-btn {
+      padding: 8px 18px;
+      background: var(--c-text-hi);
+      color: #000;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: #d4d4d8;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255,255,255,0.12);
+    }
+
+    /* ── HERO ───────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 48px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border: 1px solid var(--c-border);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--c-text-mid);
+      margin-bottom: 24px;
+      background: var(--c-surface);
+    }
+
+    .hero-eyebrow .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.8);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .hero-h1 {
+      font-size: clamp(42px, 5vw, 68px);
+      font-weight: 900;
+      line-height: 1.04;
+      letter-spacing: -0.035em;
+      margin-bottom: 20px;
+    }
+
+    .hero-h1 .grad {
+      background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 60%, rgba(255,255,255,0.4) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 16.5px;
+      color: var(--c-text-mid);
+      line-height: 1.7;
+      max-width: 460px;
+      margin-bottom: 36px;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .btn-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      background: #ffffff;
+      color: #000;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 10px;
+      transition: all 0.25s var(--ease-out);
+      box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+    }
+
+    .btn-main:hover {
+      background: #e4e4e7;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255,255,255,0.22);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border: 1.5px solid var(--c-border);
+      color: var(--c-text-hi);
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      transition: all 0.25s var(--ease-out);
+      background: var(--c-surface);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--c-border-hover);
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-2px);
+    }
+
+    /* Stats bar */
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding-top: 32px;
+      border-top: 1px solid var(--c-border);
+    }
+
+    .stat-item { display: flex; flex-direction: column; gap: 2px; }
+
+    .stat-num {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--c-text-hi);
+      letter-spacing: -0.03em;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c-text-lo);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .stat-live {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--c-text-hi);
+    }
+
+    .stat-live::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(255,255,255,0.8);
+      display: block;
+      animation: blink 1.6s ease-in-out infinite;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--c-border);
+    }
+
+    /* ── Player Card ─────────────────────────────────────── */
+    .hero-art {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card-3d-wrap {
+      transform: perspective(1200px) rotateY(-10deg) rotateX(4deg);
+      transition: transform 0.8s var(--ease-out);
+    }
+
+    .card-3d-wrap:hover {
+      transform: perspective(1200px) rotateY(-2deg) rotateX(1deg) scale(1.02);
+    }
+
+    .player-card {
+      width: 420px;
+      background: rgba(12,12,15,0.5);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-card);
+      padding: 28px;
+      box-shadow:
+        0 40px 80px rgba(0,0,0,0.9),
+        0 0 0 1px rgba(255,255,255,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .pc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .live-tag {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      color: var(--c-text-mid);
+    }
+
+    .live-dot {
+      width: 6px; height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255,255,255,0.7);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    .pc-menu {
+      color: var(--c-text-mid);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+    }
+
+    .pc-body {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* Vinyl */
+    .vinyl {
+      width: 108px; height: 108px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+      animation: spin 10s linear infinite;
+      background: repeating-radial-gradient(circle, #111113 0px, #111113 2px, #1c1c1f 4px, #222224 5px);
+      border: 2px solid rgba(255,255,255,0.04);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 25px rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .vinyl-center {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0%, #71717a 60%, #09090b 100%);
+      border: 3px solid #000;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.9), 0 0 12px rgba(255,255,255,0.12);
+    }
+
+    /* Waveform bars */
+    .waveform {
+      display: flex;
+      align-items: flex-end;
+      gap: 3.5px;
+      height: 90px;
+      flex: 1;
+    }
+
+    .wb {
+      flex: 1;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #ffffff 0%, #71717a 100%);
+      box-shadow: 0 0 8px rgba(255,255,255,0.1);
+      animation: wb var(--s) ease-in-out var(--d) infinite alternate;
+      min-height: 8px;
+    }
+
+    @keyframes wb {
+      0% {
+        height: 12px;
+        background: linear-gradient(180deg, #52525b 0%, #27272a 100%);
+        box-shadow: none;
+      }
+      100% {
+        height: var(--h);
+        background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+        box-shadow: 0 0 10px rgba(255,255,255,0.3);
+      }
+    }
+
+    .pc-track h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--c-text-hi);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .pc-track p {
+      font-size: 12.5px;
+      color: var(--c-text-mid);
+      font-weight: 500;
+    }
+
+    .pc-progress-wrap {
+      height: 4px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .pc-progress-fill {
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(90deg, #fff, #a1a1aa);
+      border-radius: 100px;
+      box-shadow: 0 0 8px rgba(255,255,255,0.25);
+    }
+
+    .pc-timestamps {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: var(--c-text-mid);
+      font-family: var(--font-mono, monospace);
+      margin-top: 5px;
+    }
+
+    .pc-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ctrl {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--c-text-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 50%;
+      transition: all 0.18s;
+    }
+
+    .ctrl:hover { color: var(--c-text-hi); transform: scale(1.1); }
+
+    .ctrl.play {
+      width: 46px; height: 46px;
+      background: #fff;
+      color: #000;
+      border-radius: 50%;
+      box-shadow: 0 6px 18px rgba(255,255,255,0.15);
+      transition: all 0.2s;
+    }
+
+    .ctrl.play:hover {
+      background: #e4e4e7;
+      transform: scale(1.08);
+      box-shadow: 0 10px 25px rgba(255,255,255,0.3);
+    }
+
+    /* Volume display in card */
+    .pc-volume-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pc-vol-icon { color: var(--c-text-mid); flex-shrink: 0; }
+
+    .pc-vol-track {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 100px;
+      position: relative;
+    }
+
+    .pc-vol-fill {
+      width: 70%;
+      height: 100%;
+      background: linear-gradient(90deg, #fff, #a1a1aa);
+      border-radius: 100px;
+    }
+
+    .pc-vol-val {
+      font-size: 11px;
+      color: var(--c-text-mid);
+      font-family: var(--font-mono, monospace);
+      min-width: 28px;
+      text-align: right;
+    }
+
+    /* ── DIVIDER ──────────────────────────────────────────── */
+    .section-divider {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+      height: 1px;
+      background: var(--c-border);
+    }
+
+    /* ── COMMANDS STRIP ───────────────────────────────────── */
+    .commands-strip {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 48px;
+    }
+
+    .strip-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--c-text-lo);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .strip-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--c-border);
+    }
+
+    .cmd-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .cmd-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.25s;
+    }
+
+    .cmd-card:hover {
+      background: rgba(255,255,255,0.04);
+      border-color: var(--c-border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .cmd-token {
+      font-family: var(--font-mono, monospace);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--c-text-hi);
+      background: rgba(255,255,255,0.04);
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.06);
+      width: fit-content;
+    }
+
+    .cmd-desc {
+      font-size: 12px;
+      color: var(--c-text-mid);
+      line-height: 1.5;
+    }
+
+    /* ── HOW IT WORKS ──────────────────────────────────────── */
+    .how-section {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 48px;
+    }
+
+    .section-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .section-tag span {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--c-text-lo);
+      text-transform: uppercase;
+    }
+
+    .section-tag::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--c-text-lo);
+    }
+
+    .how-header {
+      max-width: 600px;
+      margin-bottom: 52px;
+    }
+
+    .how-header h2 {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .how-header p {
+      font-size: 15px;
+      color: var(--c-text-mid);
+      line-height: 1.65;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .step-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      padding: 36px 32px;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .step-card:first-child { border-radius: var(--radius-card) 0 0 var(--radius-card); }
+    .step-card:last-child { border-radius: 0 var(--radius-card) var(--radius-card) 0; }
+
+    .step-card:hover {
+      background: rgba(255,255,255,0.035);
+      border-color: var(--c-border-hover);
+      z-index: 1;
+      transform: scale(1.01);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .step-num {
+      font-size: 40px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.06);
+      letter-spacing: -0.04em;
+      margin-bottom: 24px;
+      font-family: var(--font-display, sans-serif);
+    }
+
+    .step-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--c-text-mid);
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.02);
+      transition: all 0.3s;
+    }
+
+    .step-card:hover .step-icon {
+      border-color: var(--c-border-hover);
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .step-card h3 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.015em;
+      margin-bottom: 10px;
+    }
+
+    .step-card p {
+      font-size: 13.5px;
+      color: var(--c-text-mid);
+      line-height: 1.6;
+    }
+
+    /* ── FEATURES GRID ─────────────────────────────────────── */
+    .features-section {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 48px;
+    }
+
+    .features-section .section-tag { margin-bottom: 20px; }
+
+    .feat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 48px;
+    }
+
+    .feat-header h2 {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      max-width: 400px;
+      line-height: 1.1;
+    }
+
+    .feat-header p {
+      font-size: 14px;
+      color: var(--c-text-mid);
+      max-width: 320px;
+      line-height: 1.65;
+      text-align: right;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      transition: all 0.3s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--c-border-hover);
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .feat-num {
+      font-family: var(--font-mono, monospace);
+      font-size: 11px;
+      color: var(--c-text-lo);
+      font-weight: 700;
+      position: absolute;
+      top: 28px;
+      right: 28px;
+    }
+
+    .feat-icon {
+      width: 46px; height: 46px;
+      border: 1px solid var(--c-border);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--c-text-mid);
+      margin-bottom: 22px;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover .feat-icon {
+      border-color: var(--c-border-hover);
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .feature-card h3 {
+      font-size: 16.5px;
+      font-weight: 800;
+      letter-spacing: -0.015em;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: var(--c-text-mid);
+      line-height: 1.6;
+    }
+
+    /* ── SOCIAL PROOF TICKER ──────────────────────────────── */
+    .ticker-section {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--c-border);
+      border-bottom: 1px solid var(--c-border);
+      padding: 20px 0;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, black 15%, black 85%, transparent);
+    }
+
+    .ticker-track {
+      display: flex;
+      gap: 40px;
+      width: max-content;
+      animation: scrollLeft 30s linear infinite;
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+      font-size: 13px;
+      color: var(--c-text-lo);
+      font-weight: 600;
+    }
+
+    .ticker-item .ti-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--c-text-lo);
+      flex-shrink: 0;
+    }
+
+    @keyframes scrollLeft {
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── FULL-WIDTH CTA BANNER ────────────────────────────── */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 48px;
+    }
+
+    .cta-inner {
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-card);
+      padding: 60px 64px;
+      background: var(--c-surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .cta-inner::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -10%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-inner::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    .cta-copy h2 {
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .cta-copy p {
+      font-size: 14.5px;
+      color: var(--c-text-mid);
+      max-width: 460px;
+      line-height: 1.6;
+    }
+
+    .cta-actions { display: flex; gap: 14px; flex-shrink: 0; }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--c-border);
+      padding: 40px 48px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--c-text-hi);
+    }
+
+    .footer-logo img {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--c-border);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--c-text-mid);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--c-text-hi); }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--c-text-lo);
+    }
+
+    /* ── ERROR BANNER ──────────────────────────────────────── */
+    .error-banner {
+      max-width: 1200px;
+      margin: 16px auto 0;
+      padding: 0 48px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .error-banner .inner {
+      background: rgba(252,165,165,0.05);
+      border: 1px solid rgba(252,165,165,0.2);
+      color: #fca5a5;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    /* ── SCROLL FADE IN ─────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 1000px) {
+      .navbar { padding: 0 24px; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 48px 24px 40px;
+        gap: 48px;
+        text-align: center;
+      }
+
+      .hero-sub { margin-inline: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .hero-art { order: -1; }
+      .player-card { width: 100%; max-width: 400px; }
+
+      .cmd-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid { grid-template-columns: 1fr; gap: 16px; }
+      .step-card { border-radius: var(--radius-card) !important; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feat-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .feat-header p { text-align: left; }
+
+      .cta-inner { flex-direction: column; padding: 40px 32px; }
+
+      .footer-inner { flex-direction: column; text-align: center; gap: 16px; }
+      .footer-links { justify-content: center; }
+
+      .commands-strip, .how-section, .features-section, .cta-section {
+        padding-inline: 24px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .cmd-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Background layers -->
+  <div class="bg-canvas">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+  </div>
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+  <div class="particle-layer" id="particles"></div>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <img src="{{ bot_avatar | default('/static/Echo-avatar.png') }}" alt="{{ bot_name }} logo">
+        {{ bot_name }}
+      </div>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/status">Status</a>
+        {% if support_server %}
+        <a href="{{ support_server }}" target="_blank">Support</a>
+        {% endif %}
+        {% if session %}
+        <a href="/dashboard" class="nav-btn">Dashboard →</a>
+        {% else %}
+        <a href="/auth/login" class="nav-btn">Log In</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <!-- Error banner -->
+  {% if request.query_params.get('error') %}
+  <div class="error-banner">
+    <div class="inner">Login didn't go through — give it another try.</div>
+  </div>
+  {% endif %}
+
+  <!-- ═══ HERO ═══════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-copy fade-up">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        PREMIUM MUSIC BOT
+      </div>
+      <h1 class="hero-h1">
+        <span class="grad">Your music,<br>your vibe.</span>
+      </h1>
+      <p class="hero-sub">
+        Control {{ bot_name }}'s queue, playback, and server settings from a stunning live dashboard — built to feel like an interactive music player.
+      </p>
+      <div class="hero-actions">
+        {% if session %}
+        <a href="/dashboard" class="btn-main">
+          Open Dashboard
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/></svg>
+        </a>
+        {% else %}
+        <a href="/auth/login" class="btn-main">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          Log in with Discord
+        </a>
+        {% endif %}
+        {% if bot_id %}
+        <a href="https://discord.com/api/oauth2/authorize?client_id={{ bot_id }}&permissions=8&scope=bot%20applications.commands" class="btn-ghost" target="_blank">
+          Invite {{ bot_name }}
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12L12 4M6 4h6v6"/></svg>
+        </a>
+        {% else %}
+        <a href="#" class="btn-ghost" onclick="alert('Bot invite is not available right now.'); return false;">
+          Invite Bot
+        </a>
+        {% endif %}
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">{{ guild_count }}</span>
+          <span class="stat-label">Servers</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-live">Active</span>
+          <span class="stat-label">24/7 Uptime</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">Free</span>
+          <span class="stat-label">No Paywall</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-art fade-up" style="transition-delay: 0.1s;">
+      <div class="card-3d-wrap">
+        <div class="player-card">
+          <div class="pc-header">
+            <div class="live-tag"><span class="live-dot"></span>LIVE STREAMING</div>
+            <span class="pc-menu">• • •</span>
+          </div>
+          <div class="pc-body">
+            <div class="vinyl">
+              <div class="vinyl-center"></div>
+            </div>
+            <div class="waveform">
+              <div class="wb" style="--h:55px;--d:0.0s;--s:1.2s"></div>
+              <div class="wb" style="--h:80px;--d:0.3s;--s:0.9s"></div>
+              <div class="wb" style="--h:40px;--d:0.1s;--s:1.5s"></div>
+              <div class="wb" style="--h:90px;--d:0.5s;--s:1.0s"></div>
+              <div class="wb" style="--h:50px;--d:0.2s;--s:1.3s"></div>
+              <div class="wb" style="--h:70px;--d:0.4s;--s:0.8s"></div>
+              <div class="wb" style="--h:30px;--d:0.1s;--s:1.4s"></div>
+              <div class="wb" style="--h:85px;--d:0.6s;--s:1.1s"></div>
+              <div class="wb" style="--h:60px;--d:0.2s;--s:1.2s"></div>
+              <div class="wb" style="--h:75px;--d:0.4s;--s:0.9s"></div>
+              <div class="wb" style="--h:45px;--d:0.3s;--s:1.6s"></div>
+              <div class="wb" style="--h:95px;--d:0.5s;--s:1.1s"></div>
+              <div class="wb" style="--h:55px;--d:0.2s;--s:1.3s"></div>
+              <div class="wb" style="--h:80px;--d:0.6s;--s:0.7s"></div>
+              <div class="wb" style="--h:35px;--d:0.1s;--s:1.5s"></div>
+            </div>
+          </div>
+          <div class="pc-track">
+            <h3>Midnight Echoes</h3>
+            <p>Neon Dreams (High-Fi Edition)</p>
+          </div>
+          <div>
+            <div class="pc-progress-wrap">
+              <div class="pc-progress-fill"></div>
+            </div>
+            <div class="pc-timestamps"><span>1:45</span><span>3:12</span></div>
+          </div>
+          <div class="pc-controls">
+            <button class="ctrl" title="Shuffle">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="16" y1="3" x2="21" y2="3"/><line x1="21" y1="3" x2="21" y2="8"/><line x1="4" y1="20" x2="21" y2="3"/><line x1="21" y1="21" x2="16" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/><line x1="15" y1="15" x2="20" y2="20"/></svg>
+            </button>
+            <button class="ctrl" title="Prev">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="5" y="4" width="2" height="16"/></svg>
+            </button>
+            <button class="ctrl play" title="Pause">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+            </button>
+            <button class="ctrl" title="Next">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="2" height="16"/></svg>
+            </button>
+            <button class="ctrl" title="Repeat">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            </button>
+          </div>
+          <div class="pc-volume-row">
+            <span class="pc-vol-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </span>
+            <div class="pc-vol-track"><div class="pc-vol-fill"></div></div>
+            <span class="pc-vol-val">70%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social proof ticker -->
+  <div class="ticker-section">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="ti-dot"></span>High Fidelity Audio</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Real-time WebSocket Sync</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Custom Playlists</div>
+      <div class="ticker-item"><span class="ti-dot"></span>24/7 Uptime</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Autoplay Support</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Queue Management</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Volume Control</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Skip & Shuffle</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Dashboard Controls</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Free &amp; Open Source</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="ticker-item"><span class="ti-dot"></span>High Fidelity Audio</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Real-time WebSocket Sync</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Custom Playlists</div>
+      <div class="ticker-item"><span class="ti-dot"></span>24/7 Uptime</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Autoplay Support</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Queue Management</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Volume Control</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Skip & Shuffle</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Dashboard Controls</div>
+      <div class="ticker-item"><span class="ti-dot"></span>Free &amp; Open Source</div>
+    </div>
+  </div>
+
+  <!-- ═══ COMMANDS STRIP ═════════════════════════════════ -->
+  <div class="commands-strip fade-up">
+    <div class="strip-label">Popular Commands</div>
+    <div class="cmd-grid">
+      <div class="cmd-card">
+        <span class="cmd-token">&gt;play [song]</span>
+        <span class="cmd-desc">Play any track or URL in your voice channel instantly</span>
+      </div>
+      <div class="cmd-card">
+        <span class="cmd-token">&gt;queue</span>
+        <span class="cmd-desc">View upcoming tracks in the server queue</span>
+      </div>
+      <div class="cmd-card">
+        <span class="cmd-token">&gt;volume [0-150]</span>
+        <span class="cmd-desc">Set the playback volume to any level up to 150</span>
+      </div>
+      <div class="cmd-card">
+        <span class="cmd-token">&gt;skip</span>
+        <span class="cmd-desc">Skip the current song and play the next in queue</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ HOW IT WORKS ════════════════════════════════════ -->
+  <section class="how-section" id="how">
+    <div class="section-tag"><span>How It Works</span></div>
+    <div class="how-header">
+      <h2>Up and running<br>in seconds</h2>
+      <p>No complicated setup. Just invite {{ bot_name }}, log into the dashboard, and take full control of your server's music.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card fade-up">
+        <div class="step-num">01</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        </div>
+        <h3>Invite the Bot</h3>
+        <p>Click the Invite button and add {{ bot_name }} to your Discord server with the required permissions.</p>
+      </div>
+      <div class="step-card fade-up" style="transition-delay: 0.1s;">
+        <div class="step-num">02</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3>Log In with Discord</h3>
+        <p>Authenticate with your Discord account to link your servers to the web dashboard.</p>
+      </div>
+      <div class="step-card fade-up" style="transition-delay: 0.2s;">
+        <div class="step-num">03</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        </div>
+        <h3>Control Your Music</h3>
+        <p>Play, skip, queue and manage tracks through the dashboard or directly in your chat channel.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURES ════════════════════════════════════════ -->
+  <section class="features-section" id="features">
+    <div class="section-tag"><span>Features</span></div>
+    <div class="feat-header">
+      <h2>Everything<br>you need</h2>
+      <p>Built for Discord servers of any size, with a premium dashboard that syncs with your bot in real-time.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <span class="feat-num">01</span>
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <h3>High Fidelity Audio</h3>
+        <p>Crystal clear playback through optimized Lavalink nodes for lag-free streaming.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.07s;">
+        <span class="feat-num">02</span>
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </div>
+        <h3>Real-time Sync</h3>
+        <p>Dashboard and bot stay in perfect sync via live WebSockets — no refresh needed.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.14s;">
+        <span class="feat-num">03</span>
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg>
+        </div>
+        <h3>Queue Management</h3>
+        <p>View, reorder, skip, and clear the full track queue from the dashboard in one click.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.0s;">
+        <span class="feat-num">04</span>
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Custom Playlists</h3>
+        <p>Save favorite tracks into custom playlists and share them across servers via paste codes.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.07s;">
+        <span class="feat-num">05</span>
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+        </div>
+        <h3>Settings Control</h3>
+        <p>Configure prefix, autoplay, 24/7 mode, and channel lock — all from the dashboard.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.14s;">
+        <span class="feat-num">06</span>
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>No Paywall. Ever.</h3>
+        <p>{{ bot_name }} is completely free with no premium tiers, limits, or locked features.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA BANNER ══════════════════════════════════════ -->
+  <div class="cta-section fade-up">
+    <div class="cta-inner">
+      <div class="cta-copy">
+        <h2>Ready to upgrade<br>your server's music?</h2>
+        <p>Join hundreds of servers already using {{ bot_name }} for premium, lag-free music — completely free.</p>
+      </div>
+      <div class="cta-actions">
+        {% if session %}
+        <a href="/dashboard" class="btn-main">Open Dashboard →</a>
+        {% else %}
+        <a href="/auth/login" class="btn-main">Log in with Discord</a>
+        {% endif %}
+        {% if bot_id %}
+        <a href="https://discord.com/api/oauth2/authorize?client_id={{ bot_id }}&permissions=8&scope=bot%20applications.commands" class="btn-ghost" target="_blank">Invite Bot</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ══════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="{{ bot_avatar | default('/static/Echo-avatar.png') }}" alt="{{ bot_name }}">
+        {{ bot_name }}
+      </div>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="/dashboard">Dashboard</a>
+        {% if support_server %}
+        <a href="{{ support_server }}" target="_blank">Support</a>
+        {% endif %}
+      </div>
+      <span class="footer-copy">&copy; 2026 {{ bot_name }}. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <!-- ═══ LOGIN REQUIRED POPUP ═══════════════════════════ -->
+  <div id="login-popup" style="
+    display: none;
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    align-items: center;
+    justify-content: center;
+  ">
+    <div style="
+      background: #0d0d10;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 44px 48px;
+      max-width: 440px;
+      width: calc(100% - 48px);
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.06);
+      position: relative;
+      animation: popIn 0.35s cubic-bezier(0.16,1,0.3,1) both;
+    ">
+      <button onclick="closeLoginPopup()" style="
+        position: absolute; top: 16px; right: 16px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #71717a; cursor: pointer; border-radius: 8px;
+        width: 30px; height: 30px; font-size: 16px;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s;
+      " onmouseover="this.style.color='#fff';this.style.borderColor='rgba(255,255,255,0.2)'"
+         onmouseout="this.style.color='#71717a';this.style.borderColor='rgba(255,255,255,0.08)'">✕</button>
+
+      <div style="
+        width: 56px; height: 56px; border-radius: 14px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.1);
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 24px;
+      ">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+
+      <h2 style="font-size: 22px; font-weight: 900; letter-spacing: -0.025em; margin-bottom: 10px; color: #f4f4f5;">
+        Login Required
+      </h2>
+      <p style="font-size: 14px; color: #71717a; line-height: 1.6; margin-bottom: 28px;">
+        You need to log in with Discord to access the dashboard and control your server's music.
+      </p>
+
+      <a href="/auth/login" style="
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        padding: 13px 24px;
+        background: #ffffff; color: #000;
+        font-size: 14px; font-weight: 700;
+        border-radius: 10px; text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: 0 4px 20px rgba(255,255,255,0.12);
+        margin-bottom: 12px;
+      " onmouseover="this.style.background='#e4e4e7';this.style.transform='translateY(-2px)'"
+         onmouseout="this.style.background='#ffffff';this.style.transform='translateY(0)'">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+        </svg>
+        Log in with Discord
+      </a>
+
+      <button onclick="closeLoginPopup()" style="
+        display: block; width: 100%; padding: 11px;
+        background: none; border: 1px solid rgba(255,255,255,0.07);
+        color: #71717a; font-size: 13.5px; font-weight: 600;
+        border-radius: 10px; cursor: pointer; transition: all 0.2s;
+      " onmouseover="this.style.borderColor='rgba(255,255,255,0.18)';this.style.color='#a1a1aa'"
+         onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.color='#71717a'">
+        Continue Browsing
+      </button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.92) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    #login-popup.active { display: flex !important; }
+  </style>
+
+  <script>
+    // ── Floating particles ──────────────────────────────
+    const layer = document.getElementById('particles');
+    const symbols = ['✦', '·', '+', '◦', '★'];
+    for (let i = 0; i < 28; i++) {
+      const el = document.createElement('span');
+      el.className = 'particle';
+      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      el.style.cssText = `
+        left: ${Math.random() * 100}vw;
+        animation-duration: ${14 + Math.random() * 16}s;
+        animation-delay: ${Math.random() * -30}s;
+        font-size: ${7 + Math.random() * 7}px;
+        filter: blur(${Math.random() * 0.8}px);
+        opacity: ${0.1 + Math.random() * 0.25};
+      `;
+      layer.appendChild(el);
+    }
+
+    // ── Scroll fade-in observer ─────────────────────────
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ── Login Required Popup ────────────────────────────
+    function showLoginPopup() {
+      document.getElementById('login-popup').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLoginPopup() {
+      document.getElementById('login-popup').classList.remove('active');
+      document.body.style.overflow = '';
+      // Clean the query param from URL
+      const url = new URL(window.location);
+      url.searchParams.delete('login_required');
+      window.history.replaceState({}, '', url);
+    }
+
+    // Auto-show on ?login_required=1
+    if (new URLSearchParams(window.location.search).get('login_required') === '1') {
+      showLoginPopup();
+    }
+
+    // Close on backdrop click
+    document.getElementById('login-popup').addEventListener('click', function(e) {
+      if (e.target === this) closeLoginPopup();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLoginPopup();
+    });
+  </script>
+</body>
+
+</html>

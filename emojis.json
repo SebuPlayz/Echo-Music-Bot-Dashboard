@@ -1,0 +1,86 @@
+{
+  "SUCCESS": {
+    "source": "<:icon_tick:1526451653761564682>"
+  },
+  "ERROR": {
+    "source": "<:icon_cross:1526451801514053824>"
+  },
+  "INFO": {
+    "source": "<:icons_info:1526452071539150851>"
+  },
+  "LOADING": {
+    "source": "<a:emoji_1076046:1526452343376183336>"
+  },
+  "MUSIC": {
+    "source": "<:music:1526452523739906098>"
+  },
+  "PLAYING": {
+    "source": "<:music:1526452523739906098>"
+  },
+  "HEART": {
+    "source": "<:like:1522896545098367128>"
+  },
+  "BTN_PAUSE": {
+    "source": "<:pause:1526453178512576592>"
+  },
+  "BTN_RESUME": {
+    "source": "<:icon_pause:1526453490686361741>"
+  },
+  "BTN_SKIP": {
+    "source": "<:icon_skip:1526453677353730169>"
+  },
+  "BTN_STOP": {
+    "source": "<:music_stop:1526453840310697985>"
+  },
+  "BTN_LOOP": {
+    "source": "<:Icon_Loop:1526453979582824448>"
+  },
+  "BTN_AUTOPLAY": {
+    "source": "<:auto:1526454110772269090>"
+  },
+  "SPOTIFY": {
+    "source": "<:Spotify_Primary_Logo_RGB_Green:1526451428854599761>"
+  },
+  "YOUTUBE": {
+    "source": "<:33615youtube69:1526451219827265700>"
+  },
+  "APPLE_MUSIC": {
+    "source": "<:apple:1522896449258655785>"
+  },
+  "SOUNDCLOUD": {
+    "source": "<:volume:1522896520242790461>"
+  },
+  "DOT": {
+    "source": "<:7135graydot:1526450496297238689>"
+  },
+  "ARROW": {
+    "source": "<a:Arrow_White:1526450912493572267>"
+  },
+  "CAT_MUSIC": {
+    "source": "<:music:1526452523739906098>"
+  },
+  "CAT_CONFIG": {
+    "source": "<:Icons_utility:1526454344797519872>"
+  },
+  "CAT_INFO": {
+    "source": "<:icons_info:1526452071539150851>"
+  },
+  "CAT_UTILITY": {
+    "source": "<:icon_ignore:1526454670225178634>"
+  },
+  "Echo": {
+    "source": "<:echologo:1526448906098049064>"
+  },
+  "LATENCY": {
+    "source": "<:icon_ignore:1526454670225178634>"
+  },
+  "UPTIME": {
+    "source": "<:music:1526452523739906098>"
+  },
+  "MYMUSIC": {
+    "source": "<a:my_music:1522899608445911141>"
+  },
+  "WAITING": {
+    "source": "<:icons_info:1526452071539150851>"
+  }
+}

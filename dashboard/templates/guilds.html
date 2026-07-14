@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Servers — {{ bot_name }}</title>
+  <link rel="stylesheet" href="/static/style.css?v=7.5">
+  <link rel="icon" href="{{ bot_avatar | default('/static/Echo-avatar.png') }}">
+  <style>
+    /* =====================================================
+       PREMIUM GUILDS PAGE DESIGN SYSTEM
+    ===================================================== */
+    :root {
+      --bg: #050506;
+      --surface: rgba(255,255,255,0.028);
+      --surface-2: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.18);
+      --text-hi: #f4f4f5;
+      --text-mid: #a1a1aa;
+      --text-lo: #52525b;
+      --green: #4ade80;
+      --red: #f87171;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --r-card: 16px;
+      --r-sm: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-hi);
+      font-family: var(--font-body, 'Inter', sans-serif);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated background ─── */
+    .bg-layer {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    }
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.35;
+      animation: orbDrift 24s ease-in-out infinite alternate;
+    }
+    .bg-orb-1 {
+      width: 700px; height: 700px;
+      top: -200px; left: -100px;
+      background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+    }
+    .bg-orb-2 {
+      width: 600px; height: 600px;
+      bottom: -100px; right: -100px;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      animation-duration: 32s;
+      animation-direction: alternate-reverse;
+    }
+    @keyframes orbDrift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(50px, -40px) scale(1.08); }
+    }
+    .bg-grid {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── Topbar ─────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      height: 68px;
+      background: rgba(5,5,6,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 17px; letter-spacing: -0.02em;
+      color: var(--text-hi); text-decoration: none;
+    }
+    .brand img {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1px solid var(--border);
+    }
+
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+
+    .home-link {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-mid); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .home-link:hover { color: var(--text-hi); }
+
+    .user-chip {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 14px 6px 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      transition: border-color 0.2s;
+    }
+    .user-chip:hover { border-color: var(--border-hover); }
+    .user-chip img { width: 26px; height: 26px; border-radius: 50%; }
+    .user-chip .uname { font-size: 13px; font-weight: 700; color: var(--text-hi); }
+
+    .logout-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      font-size: 12.5px; font-weight: 700;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      border-color: rgba(248,113,113,0.4);
+      color: #f87171;
+      background: rgba(248,113,113,0.05);
+    }
+
+    /* ── Page wrapper ───────────────── */
+    .page-wrap {
+      position: relative; z-index: 1;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+
+    /* ── Page header ────────────────── */
+    .page-header {
+      padding: 64px 0 48px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .ph-left h1 {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      margin-bottom: 8px;
+    }
+
+    .ph-left h1 .hi {
+      background: linear-gradient(135deg, #fff 30%, #71717a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .ph-left p {
+      font-size: 14.5px;
+      color: var(--text-mid);
+      font-weight: 500;
+    }
+
+    .server-count-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 12.5px; font-weight: 700;
+      color: var(--text-mid);
+      white-space: nowrap;
+    }
+
+    .server-count-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px rgba(74,222,128,0.6);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ── Section label ──────────────── */
+    .section-label {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 18px;
+    }
+    .section-label span {
+      font-size: 10.5px; font-weight: 800;
+      letter-spacing: 0.12em;
+      color: var(--text-lo);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── Guilds grid ────────────────── */
+    .guilds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    .guild-section { margin-bottom: 48px; }
+
+    /* ── Guild card ─────────────────── */
+    .guild-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      cursor: pointer;
+      transition: all 0.28s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .guild-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.025) 0%, transparent 60%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .guild-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      background: var(--surface-2);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.55);
+    }
+
+    .guild-card:hover::before { opacity: 1; }
+
+    .guild-card.unjoined {
+      opacity: 0.72;
+      border-style: dashed;
+    }
+    .guild-card.unjoined:hover {
+      opacity: 1;
+      border-style: solid;
+    }
+
+    /* Card top row */
+    .card-top {
+      display: flex; align-items: center; gap: 15px;
+    }
+
+    .guild-icon {
+      width: 54px; height: 54px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: var(--surface-2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900;
+      color: var(--text-mid);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      transition: border-color 0.25s;
+    }
+    .guild-card:hover .guild-icon { border-color: var(--border-hover); }
+
+    .guild-info { flex: 1; min-width: 0; }
+
+    .guild-name {
+      font-size: 15.5px; font-weight: 800;
+      letter-spacing: -0.015em;
+      color: var(--text-hi);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .guild-sub {
+      font-size: 12px; color: var(--text-mid); font-weight: 500;
+      margin-top: 3px;
+    }
+
+    /* Arrow chevron */
+    .card-arrow {
+      color: var(--text-lo);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: all 0.25s;
+      flex-shrink: 0;
+    }
+    .guild-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+    /* Card bottom row */
+    .card-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+    }
+
+    .badge-row { display: flex; gap: 7px; flex-wrap: wrap; }
+
+    .badge {
+      font-size: 9.5px; font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-lo);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .badge.live {
+      background: rgba(74,222,128,0.08);
+      border-color: rgba(74,222,128,0.25);
+      color: var(--green);
+      box-shadow: 0 0 8px rgba(74,222,128,0.08);
+    }
+
+    .badge.owner {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.12);
+      color: var(--text-mid);
+    }
+
+    .invite-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: #ffffff; color: #000;
+      font-size: 12px; font-weight: 800;
+      border-radius: 8px; border: none;
+      cursor: pointer; text-decoration: none;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .invite-btn:hover {
+      background: #e4e4e7;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255,255,255,0.12);
+    }
+
+    /* ── Skeleton loader ─────────────── */
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .skeleton-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 22px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .skel {
+      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+      background-size: 200% 100%;
+      border-radius: 6px;
+      animation: shimmer 1.6s ease-in-out infinite;
+    }
+    .skel-row { display: flex; gap: 14px; align-items: center; }
+    .skel-icon { width: 54px; height: 54px; border-radius: 12px; flex-shrink: 0; }
+    .skel-text { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .skel-h { height: 14px; border-radius: 4px; }
+    .skel-p { height: 11px; width: 60%; border-radius: 4px; }
+    .skel-foot { height: 10px; width: 40%; border-radius: 4px; }
+    @keyframes shimmer {
+      0%   { background-position: -200% 0; }
+      100% { background-position:  200% 0; }
+    }
+
+    /* ── Empty & error states ──────── */
+    .state-box {
+      border: 1px dashed var(--border);
+      border-radius: var(--r-card);
+      padding: 60px 32px;
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+    .state-box .sb-icon {
+      width: 52px; height: 52px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      color: var(--text-lo);
+    }
+    .state-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+    .state-box p { font-size: 13.5px; color: var(--text-mid); line-height: 1.6; max-width: 380px; margin: 0 auto; }
+
+    /* ── Responsive ────────────────── */
+    @media (max-width: 768px) {
+      .topbar { padding: 0 20px; }
+      .page-wrap { padding: 0 16px 60px; }
+      .page-header { padding: 40px 0 32px; flex-direction: column; align-items: flex-start; }
+      .guilds-grid, .skeleton-grid { grid-template-columns: 1fr; }
+      .home-link { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-layer">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <a href="/" class="brand">
+      <img src="{{ bot_avatar | default('/static/Echo-avatar.png') }}" alt="{{ bot_name }}">
+      {{ bot_name }}
+    </a>
+    <div class="topbar-right">
+      <a href="/" class="home-link">← Home</a>
+      <div class="user-chip">
+        <img src="{{ avatar }}" alt="{{ session.username }}">
+        <span class="uname">{{ session.username }}</span>
+      </div>
+      <a href="/auth/logout" class="logout-btn">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Log out
+      </a>
+    </div>
+  </header>
+
+  <!-- Page content -->
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="ph-left">
+        <h1><span class="hi">Your Servers</span></h1>
+        <p>Select a server to control its music queue and playback.</p>
+      </div>
+      <div class="server-count-pill" id="server-pill" style="display:none;">
+        <span class="dot"></span>
+        <span id="pill-text">0 active</span>
+      </div>
+    </div>
+
+    <div id="guilds-container">
+      <!-- Skeleton loaders -->
+      <div class="guild-section">
+        <div class="section-label"><span>Loading servers</span></div>
+        <div class="skeleton-grid">
+          ${[1,2,3].map(() => `
+          <div class="skeleton-card">
+            <div class="skel-row">
+              <div class="skel skel-icon"></div>
+              <div class="skel-text">
+                <div class="skel skel-h"></div>
+                <div class="skel skel-p"></div>
+              </div>
+            </div>
+            <div class="skel skel-foot"></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function esc(str) {
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+    }
+
+    function iconHtml(g, size = 54, radius = 12) {
+      if (g.icon) {
+        return `<img class="guild-icon" src="${esc(g.icon)}" alt="" style="width:${size}px;height:${size}px;border-radius:${radius}px;">`;
+      }
+      const initials = g.name.replace(/[^a-zA-Z0-9 ]/g, '').split(' ').map(w => w[0] || '').join('').slice(0, 2).toUpperCase() || g.name.slice(0, 2).toUpperCase();
+      return `<div class="guild-icon" style="width:${size}px;height:${size}px;font-size:${Math.floor(size * 0.34)}px;">${esc(initials)}</div>`;
+    }
+
+    function memberBadge(count) {
+      if (!count) return '';
+      const n = parseInt(count);
+      const label = n === 1 ? '1 member' : `${n.toLocaleString()} members`;
+      return `<span class="badge">${label}</span>`;
+    }
+
+    async function loadGuilds() {
+      const container = document.getElementById('guilds-container');
+      try {
+        const res = await fetch('/api/guilds');
+        if (res.status === 401) { window.location.href = '/auth/login'; return; }
+        if (!res.ok) throw new Error('Server error');
+        const { guilds } = await res.json();
+
+        if (!guilds || guilds.length === 0) {
+          container.innerHTML = `
+            <div class="guild-section">
+              <div class="guilds-grid">
+                <div class="state-box">
+                  <div class="sb-icon">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                  </div>
+                  <h3>No shared servers found</h3>
+                  <p>Echo needs to be in at least one server you manage. Invite it to get started.</p>
+                </div>
+              </div>
+            </div>`;
+          return;
+        }
+
+        const joined   = guilds.filter(g => g.bot_present);
+        const unjoined = guilds.filter(g => !g.bot_present);
+
+        // Update pill
+        if (joined.length > 0) {
+          const pill = document.getElementById('server-pill');
+          document.getElementById('pill-text').textContent = `${joined.length} active`;
+          pill.style.display = 'flex';
+        }
+
+        let html = '';
+
+        if (joined.length > 0) {
+          html += `
+          <div class="guild-section">
+            <div class="section-label"><span>Active Servers — Control Panel</span></div>
+            <div class="guilds-grid">
+              ${joined.map(g => `
+              <div class="guild-card" onclick="location.href='/dashboard/${g.id}'" title="Open ${esc(g.name)} dashboard">
+                <div class="card-top">
+                  ${iconHtml(g)}
+                  <div class="guild-info">
+                    <div class="guild-name">${esc(g.name)}</div>
+                    <div class="guild-sub">${g.member_count ? g.member_count.toLocaleString() + ' members' : 'Discord Server'}</div>
+                  </div>
+                  <div class="card-arrow">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                </div>
+                <div class="card-foot">
+                  <div class="badge-row">
+                    ${g.is_playing ? '<span class="badge live">▶ Playing</span>' : ''}
+                    <span class="badge ${g.permission_level === 'owner' ? 'owner' : ''}">${esc(g.permission_level)}</span>
+                  </div>
+                </div>
+              </div>`).join('')}
+            </div>
+          </div>`;
+        }
+
+        if (unjoined.length > 0) {
+          html += `
+          <div class="guild-section">
+            <div class="section-label"><span>Add Echo to your servers</span></div>
+            <div class="guilds-grid">
+              ${unjoined.map(g => {
+                const inviteUrl = g.invite_url || '#';
+                return `
+              <div class="guild-card unjoined" onclick="if('${esc(inviteUrl)}' !== '#') window.open('${esc(inviteUrl)}', '_blank'); else alert('Invite link not available.');">
+                <div class="card-top">
+                  ${iconHtml(g)}
+                  <div class="guild-info">
+                    <div class="guild-name">${esc(g.name)}</div>
+                    <div class="guild-sub">Bot not in this server</div>
+                  </div>
+                </div>
+                <div class="card-foot">
+                  <div class="badge-row">
+                    <span class="badge">${esc(g.permission_level)}</span>
+                  </div>
+                  <a href="${esc(inviteUrl)}" target="_blank" class="invite-btn" onclick="event.stopPropagation()">
+                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Invite
+                  </a>
+                </div>
+              </div>`;
+              }).join('')}
+            </div>
+          </div>`;
+        }
+
+        container.innerHTML = html;
+
+        // Animate cards in
+        container.querySelectorAll('.guild-card').forEach((el, i) => {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(16px)';
+          setTimeout(() => {
+            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            el.style.opacity = '';
+            el.style.transform = '';
+          }, i * 45);
+        });
+
+      } catch (e) {
+        container.innerHTML = `
+          <div class="guild-section">
+            <div class="guilds-grid">
+              <div class="state-box">
+                <div class="sb-icon">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+                <h3>Couldn't load your servers</h3>
+                <p>Something went wrong fetching your Discord servers. <a href="javascript:loadGuilds()" style="color:var(--text-hi);text-decoration:underline;">Try again</a></p>
+              </div>
+            </div>
+          </div>`;
+      }
+    }
+
+    // Render skeleton with JS since it uses template literals
+    document.getElementById('guilds-container').innerHTML = `
+      <div class="guild-section">
+        <div class="section-label"><span>Loading your servers…</span></div>
+        <div class="skeleton-grid">
+          ${[1,2,3].map(() => `
+          <div class="skeleton-card">
+            <div class="skel-row">
+              <div class="skel skel-icon"></div>
+              <div class="skel-text">
+                <div class="skel skel-h"></div>
+                <div class="skel skel-p"></div>
+              </div>
+            </div>
+            <div class="skel skel-foot"></div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+
+    loadGuilds();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+{
+    "APPLE_MUSIC": {
+        "animated": false,
+        "id": "1526242631062130778",
+        "name": "apple"
+    },
+    "ARROW": {
+        "animated": true,
+        "id": "1526456311947198617",
+        "name": "Arrow_White"
+    },
+    "BTN_AUTOPLAY": {
+        "animated": false,
+        "id": "1526455759301509240",
+        "name": "auto"
+    },
+    "BTN_LOOP": {
+        "animated": false,
+        "id": "1526455753630552114",
+        "name": "Icon_Loop"
+    },
+    "BTN_PAUSE": {
+        "animated": false,
+        "id": "1526455728875896893",
+        "name": "pause"
+    },
+    "BTN_RESUME": {
+        "animated": false,
+        "id": "1526455735536320695",
+        "name": "icon_pause"
+    },
+    "BTN_SKIP": {
+        "animated": false,
+        "id": "1526455741504815275",
+        "name": "icon_skip"
+    },
+    "BTN_STOP": {
+        "animated": false,
+        "id": "1526455747771240561",
+        "name": "music_stop"
+    },
+    "CAT_CONFIG": {
+        "animated": false,
+        "id": "1526456318099980399",
+        "name": "Icons_utility"
+    },
+    "CAT_INFO": {
+        "animated": false,
+        "id": "1526455704225841232",
+        "name": "icons_info"
+    },
+    "CAT_MUSIC": {
+        "animated": false,
+        "id": "1526455714267009125",
+        "name": "music"
+    },
+    "CAT_UTILITY": {
+        "animated": false,
+        "id": "1526456323934261269",
+        "name": "icon_ignore"
+    },
+    "DOT": {
+        "animated": false,
+        "id": "1526456304296792195",
+        "name": "7135graydot"
+    },
+    "ERROR": {
+        "animated": false,
+        "id": "1526455698467328010",
+        "name": "icon_cross"
+    },
+    "HEART": {
+        "animated": false,
+        "id": "1526242575688794165",
+        "name": "like"
+    },
+    "INFO": {
+        "animated": false,
+        "id": "1526455704225841232",
+        "name": "icons_info"
+    },
+    "LATENCY": {
+        "animated": false,
+        "id": "1526456323934261269",
+        "name": "icon_ignore"
+    },
+    "LOADING": {
+        "animated": true,
+        "id": "1526242559024959529",
+        "name": "emoji_1076046"
+    },
+    "MUSIC": {
+        "animated": false,
+        "id": "1526455714267009125",
+        "name": "music"
+    },
+    "MYMUSIC": {
+        "animated": true,
+        "id": "1526242691732476047",
+        "name": "my_music"
+    },
+    "PLAYING": {
+        "animated": false,
+        "id": "1526455714267009125",
+        "name": "music"
+    },
+    "Echo": {
+        "animated": false,
+        "id": "1526456329911144570",
+        "name": "echologo"
+    },
+    "SOUNDCLOUD": {
+        "animated": false,
+        "id": "1526242637101928649",
+        "name": "volume"
+    },
+    "SPOTIFY": {
+        "animated": false,
+        "id": "1526455765123203114",
+        "name": "Spotify_Primary_Logo_RGB_Green"
+    },
+    "SUCCESS": {
+        "animated": false,
+        "id": "1526455692444176385",
+        "name": "icon_tick"
+    },
+    "UPTIME": {
+        "animated": false,
+        "id": "1526455714267009125",
+        "name": "music"
+    },
+    "WAITING": {
+        "animated": false,
+        "id": "1526455704225841232",
+        "name": "icons_info"
+    },
+    "YOUTUBE": {
+        "animated": false,
+        "id": "1526456298839998484",
+        "name": "33615youtube69"
+    }
+}
