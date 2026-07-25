@@ -63,6 +63,9 @@ class EchoBot(commands.Bot):
     async def _autoload_emojis(self):
         # syncs emoji before cogs load since cogs need emojis.X at import time.
         # wrapped in a timeout so a slow network never blocks the bot from booting
+        if not Config.EMOJI_AUTO_UPLOAD:
+            print("  [SKIP] Emoji auto-upload disabled (EMOJI_AUTO_UPLOAD=false) - using cached/fallback emojis")
+            return
         try:
             from scripts.upload_application_emojis import run_sync
             summary = await asyncio.wait_for(
@@ -77,6 +80,7 @@ class EchoBot(commands.Bot):
                 print(f"  [OK] Emoji sync: up to date ({summary.get('skipped_existing', 0)} cached)")
         except Exception as e:
             print(f"  [WARN] Emoji sync skipped ({e}) - using cached/fallback emojis")
+
 
     async def _autoload_cogs(self):
         # auto-discovers cogs so we don't need a hardcoded list here
