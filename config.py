@@ -55,3 +55,6 @@ class Config:
 
     # ── Dashboard ──
     DASHBOARD_ENABLED = os.getenv("DASHBOARD_ENABLED", "true").lower() == "true"
+
+    # ── Emoji Auto Upload ──
+    EMOJI_AUTO_UPLOAD = os.getenv("EMOJI_AUTO_UPLOAD", "true").lower() == "true"
